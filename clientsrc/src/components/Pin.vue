@@ -26,11 +26,11 @@ export default {
   },
   methods: {
     async deletePin() {
-      let yes = this.$confirm("Delete the pin?");
+      let yes = await this.$confirm("Delete the pin?");
       if (!yes) {
         return;
       }
-      this.$store.dispatch("removePin");
+      this.$store.dispatch("removePin", this.pin.id);
     }
   }
 };

@@ -8,7 +8,8 @@ export class PinsController extends BaseController {
     this.router
       .get("", this.getAll)
       .use(auth0Provider.getAuthorizedUserInfo)
-      .post("", this.create);
+      .post("", this.create)
+      .delete("/:id", this.delete);
   }
   async getAll(req, res, next) {
     try {
@@ -23,6 +24,15 @@ export class PinsController extends BaseController {
       req.body.creatorEmail = req.userInfo.email;
       let pin = await pinsService.create(req.body);
       res.send(pin);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async delete(req, res, next) {
+    try {
+      let result = await pinsService.delete(req.userInfo, req.params.id);
+      res.send(result);
     } catch (error) {
       next(error);
     }

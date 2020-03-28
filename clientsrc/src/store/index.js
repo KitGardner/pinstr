@@ -18,6 +18,14 @@ export default new Vuex.Store({
     },
     addPin(state, pin) {
       state.pins.push(pin);
+    },
+    removePin(state, pinId) {
+      let removedIndex = state.pins.findIndex(p => p.id == pinId);
+      if (removedIndex == -1) {
+        throw new Error("Could not find pin in store with Id " + pinId);
+      }
+
+      state.pins.splice(removedIndex, 1);
     }
   },
   actions: {
@@ -40,6 +48,15 @@ export default new Vuex.Store({
       let pin = await $resource.post("api/pins", pinData);
       pin.creator = pinData.creator;
       commit("addPin", pin);
+    },
+
+    async removePin({ dispatch, commit }, id) {
+      let result = await $resource.delete("api/pins/" + id);
+
+      if (!result.id) {
+        throw new Error("Pin was not deleted");
+      }
+      commit("removePin", result.id);
     }
 
   },
